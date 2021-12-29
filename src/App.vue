@@ -22,7 +22,7 @@ export default {
     if (!infoStr || !userInfo.lastLogin) {
       this.isLogined = false;
       this.$message({
-        message: "登录已过期",
+        message: "登录已过期 v2",
         type: "warning",
       });
       return;
