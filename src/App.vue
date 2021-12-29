@@ -1,17 +1,45 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Login v-if="!isLogined" @logined="isLogined = true"></Login>
+    <Dashboard v-else />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Dashboard from "./components/Dashboard.vue";
+import Login from "./components/Login.vue";
+import moment from "moment";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Dashboard,
+    Login,
+  },
+  created() {
+    const infoStr = window.localStorage.getItem("userInfo");
+    const userInfo = JSON.parse(infoStr);
+    if (!infoStr || !userInfo.lastLogin) {
+      this.isLogined = false;
+      this.$message({
+        message: "登录已过期",
+        type: "warning",
+      });
+      return;
+    }
+    const diff = moment().diff(moment(userInfo.lastLogin), "day");
+    console.log(diff);
+    if (diff < 3) {
+      window.userInfo = userInfo;
+      this.isLogined = true;
+    }
+  },
+  data() {
+    return {
+      isLogined: false,
+    };
+  },
+};
 </script>
 
 <style>
@@ -21,6 +49,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 16px;
 }
 </style>
